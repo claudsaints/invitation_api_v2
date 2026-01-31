@@ -1,18 +1,27 @@
 import mongoose from "mongoose";
+import { InviteStatus } from "../@types";
 
 const inviteSchema = new mongoose.Schema({
-    senderId: {type: String, required: true},
-    receiverId: {type: String, required: true},
-    receiverEmail: { type: String, required: true },
-    status: {type: String, enum: ["pending", "accepted", "declined"], default: "pending"},
-    createdAt: {type: Date, default: Date.now},
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
+  receiverEmail: { type: String, required: true },
+  status: {
+    type: String,
+    enum: InviteStatus,
+    default: "pending",
+    required: true,
+  },
+  contextType: { type: String, required: true },
+  contextId: { type: String, required: true },
 
+  createdAt: { type: Date, default: Date.now },
+  expiresAt: { type: Date, required: true },
 });
 
 const Invite = mongoose.model("Invite", inviteSchema);
 
 export default Invite;
- 
+
 /*
 POST EXAMPLE 
 {
