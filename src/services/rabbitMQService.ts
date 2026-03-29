@@ -27,5 +27,34 @@ class RabbitMQService {
     //   process.exit(0)
     // }, 500);
   };
-  public consuming = async () => {};
+
+  public receive = async (exchange: string, type: string, ) => {
+    rabbit.connectRabbitMQ();
+    
+    const channel = rabbit.getChannel();
+
+    await channel.assertExchange(exchange, type);
+
+    const q = await channel.assertQueue("convites", {});
+
+    console.log(
+      " [*] Waiting for messages in %s. To exit press CTRL+C",
+      q.queue,
+    );
+    channel.bindQueue(q.queue, exchange, "");
+
+    channel.consume(
+      q.queue,
+      function (msg) {
+        if (msg === null) return; 
+        
+        console.log(" [x] %s", msg.content.toString());
+      },
+      {
+        noAck: false,
+      },
+    );
+  };
 }
+
+export default new RabbitMQService;

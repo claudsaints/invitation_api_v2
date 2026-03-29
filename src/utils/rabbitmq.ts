@@ -1,7 +1,14 @@
-import amqplib, { Channel} from "amqplib";
+import amqplib, { Channel } from "amqplib";
 
-const CONNECTION_RABBITMQ = process.env.RABBIRMQ_URL || "http://localhost:15672"
+import dotenv from "dotenv";
 
+dotenv.config();
+
+
+const CONNECTION_RABBITMQ =
+  process.env.RABBITMQ_URL || "http://localhost:15672";
+
+console.log(CONNECTION_RABBITMQ);
 class RabbitMQSetup {
   private RABBIT_URL: string;
   private connection!: amqplib.ChannelModel;
@@ -28,6 +35,21 @@ class RabbitMQSetup {
     }
 
     return this.channel;
+  };
+
+  public connectQueue = async (queueName: string) => {
+    if (!this.channel) {
+      throw new Error("RabbitMQ channel not initialized");
+    }
+
+    try {
+      await this.channel.assertQueue(queueName, { durable: true });
+
+      console.log("✅ Conectado ao RabbitMQ");
+      return queueName;
+    } catch (error) {
+      console.error("❌ Erro ao conectar no RabbitMQ:", error);
+    }
   };
 
   public closeRabbitMQ = async (): Promise<void> => {
