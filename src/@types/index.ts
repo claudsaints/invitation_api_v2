@@ -1,11 +1,17 @@
-
 enum InviteStatus {
-    pending,
-    accepted,
-    declined
+  pending,
+  accepted,
+  declined,
 }
 
-
-export{
-    InviteStatus
+interface Invites {
+  senderId: string;
+  receiverId: string;
+  receiverEmail: string;
+  expiresAt: string;
+  contextType: string;
+  contextId: string;
+  status: InviteStatus
 }
+
+export { InviteStatus, Invites };
